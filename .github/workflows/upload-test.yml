@@ -17,18 +17,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 1. まずファイルの中身を修正します（URIスキームエラー対策）
       - name: Fix SARIF URIs
         run: |
-          # ファイル名は zap-dummy.sarif を指定します
-          # http://localhost:8080/ や https://www.example.com/ などをまとめて削除する書き方です
-          sed -i -E 's|(http|https)://[^/]+/||g' zap-dummy.sarif
+          # 区切り文字を | から # に変更しました
+          sed -i -E 's#(http|https)://[^/]+/##g' zap-dummy.sarif
           
-          # 確認用：修正後のファイルの先頭を表示して、URLが消えているかログで見れるようにします
+          # 確認用
           echo "=== Content of SARIF file after fix ==="
           head -n 20 zap-dummy.sarif
 
-      # 2. 修正が終わったファイルをアップロードします
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
