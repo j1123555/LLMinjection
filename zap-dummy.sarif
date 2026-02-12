@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "OWASP ZAP",
+          "version": "2.14.0",
+          "rules": [
+            {
+              "id": "10020",
+              "name": "X-Frame-Options Header Not Set",
+              "shortDescription": {
+                "text": "X-Frame-Options Header Not Set"
+              },
+              "fullDescription": {
+                "text": "X-Frame-Options header is not set in the HTTP response. This allows the page to be displayed in a frame, which can lead to Clickjacking attacks."
+              },
+              "properties": {
+                "tags": [
+                  "OWASP_TOP_10/A05:2021-Security_Misconfiguration"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "10020",
+          "message": {
+            "text": "The X-Frame-Options header is not set."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "index.html"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

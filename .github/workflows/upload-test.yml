@@ -1,0 +1,27 @@
+name: Manual SARIF Upload Test
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # 手動実行ボタンを有効化
+
+jobs:
+  upload-sarif:
+    runs-on: ubuntu-latest
+    permissions:
+      # SARIFアップロードには security-events: write が必須
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          # 手順1で作ったファイル名を指定
+          sarif_file: zap-dummy.sarif
+          # ツール名を明示（管理画面で分かりやすくするため）
+          category: manual-test
