@@ -9,7 +9,6 @@ jobs:
   upload-sarif:
     runs-on: ubuntu-latest
     permissions:
-      # SARIFアップロードには security-events: write が必須
       security-events: write
       actions: read
       contents: read
@@ -17,16 +16,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # 1. まずファイルの中身を修正します（URIスキームエラー対策）
       - name: Fix SARIF URIs
         run: |
-          # "zap-results.sarif" は実際のファイル名に合わせてください
-          # "https://www.example.com/" の部分はスキャン対象のURLに合わせてください
-          # 例: https://localhost:8000/app/login -> app/login に変換されます
-          sed -i 's|https://www.example.com/||g' zap-results.sarif
+          # ファイル名は zap-dummy.sarif を指定します
+          # http://localhost:8080/ や https://www.example.com/ などをまとめて削除する書き方です
+          sed -i -E 's|(http|https)://[^/]+/||g' zap-dummy.sarif
+          
+          # 確認用：修正後のファイルの先頭を表示して、URLが消えているかログで見れるようにします
+          echo "=== Content of SARIF file after fix ==="
+          head -n 20 zap-dummy.sarif
+
+      # 2. 修正が終わったファイルをアップロードします
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
-          # 手順1で作ったファイル名を指定
           sarif_file: zap-dummy.sarif
-          # ツール名を明示（管理画面で分かりやすくするため）
           category: manual-test
