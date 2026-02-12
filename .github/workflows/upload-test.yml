@@ -13,11 +13,16 @@ jobs:
       security-events: write
       actions: read
       contents: read
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      - name: Fix SARIF URIs
+        run: |
+          # "zap-results.sarif" は実際のファイル名に合わせてください
+          # "https://www.example.com/" の部分はスキャン対象のURLに合わせてください
+          # 例: https://localhost:8000/app/login -> app/login に変換されます
+          sed -i 's|https://www.example.com/||g' zap-results.sarif
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
